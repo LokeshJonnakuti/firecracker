@@ -15,6 +15,7 @@ import tarfile
 from pathlib import Path
 
 from github import Github
+from security import safe_command
 
 
 def build_tarball(release_dir, release_tgz, arch):
@@ -53,8 +54,7 @@ def github_release(tag_version, repo, github_token):
         build_tarball(release_dir, release_tgz, arch)
         print("Done. Archive successfully created. sha256sum result:")
         sha256sums = release_tgz.with_suffix(release_tgz.suffix + ".sha256.txt")
-        subprocess.run(
-            f"sha256sum {release_tgz} > {sha256sums}",
+        safe_command.run(subprocess.run, f"sha256sum {release_tgz} > {sha256sums}",
             check=True,
             shell=True,
         )
